@@ -1,231 +1,312 @@
-🛒 Abarrotes Almiux
-Proyecto final del Bootcamp Generation México — Cohorte 66
-Equipo 404 Team Not Found
+# ALMIUX Backend
 
-Abarrotes Almiux es una tienda de abarrotes en línea con entrega a domicilio. Permite a los clientes explorar productos, gestionar su carrito y realizar pedidos, mientras que los administradores pueden gestionar el catálogo y los pedidos desde un panel dedicado.
+API REST desarrollada con **Spring Boot 3** para la plataforma ALMIUX. Gestiona usuarios, productos, categorías, pedidos y sus detalles.
 
-Inicio Almiux
+---
 
-📋 Tabla de contenidos
-Tecnologías
-Arquitectura
-Base de datos
-Backend
-Frontend
-Despliegue en AWS
-Equipo
-Tecnologías
-Capa	Tecnología	Versión
-Backend	Java + Spring Boot	17 / 3.x
-ORM	Hibernate + Spring Data JPA	—
-Seguridad	Spring Security + BCrypt	—
-Base de datos	MySQL	8+
-Frontend	HTML, CSS, JavaScript Vanilla	—
-Servidor web	Nginx (reverse proxy)	—
-Infraestructura	AWS EC2 (Ubuntu)	—
-Build	Gradle	8+
-Gestión de proyecto	Jira	—
-Arquitectura
-Usuario
-  │
-  ▼
-Nginx (puerto 80)  ──reverse proxy──▶  Spring Boot (puerto 8080)
-                                              │
-                                    ┌─────────┴─────────┐
-                                 Archivos          API REST
-                                 estáticos       /api/v1.0/...
-                                 (HTML/CSS/JS)
-                                              │
-                                              ▼
-                                         MySQL 8
-Nginx actúa como reverse proxy: recibe las peticiones en el puerto 80 y las redirige al servidor Spring Boot en el puerto 8080. Spring Boot sirve tanto el frontend estático como la API REST desde el mismo proceso.
+## Tecnologías
 
-Base de datos
-Diagrama Entidad-Relación
-Diagrama ER
+| Tecnología | Versión | Uso |
+|---|---|---|
+| Java | 17 | Lenguaje principal |
+| Spring Boot | 3.5.14 | Framework base |
+| Spring Data JPA | — | Acceso a base de datos |
+| Spring Security | — | Encriptación de contraseñas (BCrypt) |
+| Spring Validation | — | Validación de request bodies |
+| MySQL | 8+ | Base de datos relacional |
+| Hibernate | — | ORM (mapeado entidad ↔ tabla) |
+| Gradle | 8+ | Gestión de dependencias y build |
 
-Tablas
-Tabla	Descripción	Relaciones
-usuarios	Clientes y administradores	1:N con pedidos
-categorias	Grupos de productos	1:N con productos
-productos	Catálogo de la tienda	N:1 con categorias
-pedidos	Órdenes de compra	N:1 con usuarios, 1:N con detalle_pedido
-detalle_pedido	Líneas de cada pedido	N:1 con pedidos y productos
-Configuración local
-1. Crear la base de datos:
+---
 
+## Requisitos previos
+
+- Java 17 o superior
+- MySQL 8 corriendo localmente
+- Gradle (o usar el wrapper incluido `./gradlew`)
+
+---
+
+## Configuración (para cada integrante del equipo)
+
+> `application.properties` está en `.gitignore` y **no se sube a GitHub** porque contiene contraseñas.
+> Cada integrante debe crearlo localmente siguiendo estos pasos.
+
+### 1. Crear la base de datos en MySQL
+
+```sql
 CREATE DATABASE almiux_db;
-2. Copiar la plantilla de configuración:
+```
 
+### 2. Crear tu archivo de configuración local
+
+Copia la plantilla incluida en el repositorio y renómbrala:
+
+```bash
 # Mac / Linux
 cp src/main/resources/application.properties.example src/main/resources/application.properties
 
-# Windows
+# Windows (CMD)
 copy src\main\resources\application.properties.example src\main\resources\application.properties
-3. Editar con tus credenciales MySQL:
+```
 
-spring.datasource.username=TU_USUARIO
-spring.datasource.password=TU_CONTRASEÑA
-application.properties está en .gitignore y nunca se sube al repositorio.
+### 3. Editar con tus credenciales
 
-Backend
-API REST desarrollada con Spring Boot 3.
+Abre `src/main/resources/application.properties` y cambia estos dos valores:
 
-Spring Boot
+```properties
+spring.datasource.username=TU_USUARIO_MYSQL
+spring.datasource.password=TU_CONTRASEÑA_MYSQL
+```
 
-Levantar el servidor
+> Si tu MySQL local no tiene contraseña (instalación por defecto), deja `password=` en blanco.
+
+### 4. Levantar el servidor
+
+```bash
 ./gradlew bootRun
-El servidor inicia en http://localhost:8080. Hibernate crea las tablas automáticamente.
+```
 
-Endpoints — Base URL: /api/v1.0
-Usuarios /users
-Método	Endpoint	Descripción
-GET	/users	Todos los usuarios
-GET	/users/{id}	Usuario por ID
-GET	/users/email?email=	Usuario por email
-POST	/users	Crear usuario
-PUT	/users/{id}	Actualizar usuario
-DELETE	/users/{id}	Eliminar usuario
-Categorías /category
-Método	Endpoint	Descripción
-GET	/category/categories	Todas las categorías
-GET	/category/{id}	Categoría por ID
-POST	/category	Crear categoría
-PUT	/category/{id}	Actualizar categoría
-DELETE	/category/{id}	Eliminar categoría
-Productos /products
-Método	Endpoint	Descripción
-GET	/products	Todos los productos
-GET	/products/{id}	Producto por ID
-POST	/products	Crear producto
-PUT	/products/{id}	Actualizar producto
-DELETE	/products/{id}	Eliminar producto
-Pedidos /orders
-Método	Endpoint	Descripción
-GET	/orders	Todos los pedidos
-GET	/orders/{id}	Pedido por ID
-POST	/orders	Crear pedido
-PUT	/orders/{id}	Actualizar pedido
-DELETE	/orders/{id}	Eliminar pedido
-Estatus válidos: PENDIENTE · EN_PROCESO · ENVIADO · ENTREGADO · CANCELADO
+El servidor inicia en `http://localhost:8080`.  
+Las tablas se crean automáticamente gracias a `spring.jpa.hibernate.ddl-auto=update`.
 
-Detalles de pedido
-Método	Endpoint	Descripción
-GET	/orders/{id}/detalles	Detalles de un pedido
-POST	/orders/{id}/detalles	Agregar detalle
-PUT	/detalles/{id}	Actualizar detalle
-DELETE	/detalles/{id}	Eliminar detalle
-Roles
-Rol	Acceso
-CLIENTE	Explorar productos, realizar pedidos, ver su historial
-ADMIN	Panel de administración completo
-Estructura del proyecto
-src/main/java/org/generation/ALMIUX/
-├── config/        # Spring Security, BCrypt
-├── controller/    # Endpoints REST
-├── exceptions/    # Manejo centralizado de errores
-├── model/         # Entidades JPA
-├── repository/    # Interfaces de acceso a BD
-└── service/       # Lógica de negocio
-Frontend
-Desarrollado con HTML, CSS y JavaScript Vanilla. Se sirve como archivos estáticos desde Spring Boot (src/main/resources/static/).
+![Backend corriendo en IntelliJ](./images/readme/Spring.png)
 
-Páginas
-Página	Ruta	Descripción
-Inicio	/index.html	Landing page principal
-Productos	/productos.html	Catálogo con filtros y búsqueda
-Carrito	/carrito.html	Drawer del carrito de compras
-Nosotros	/nosotros.html	Información del equipo
-Promociones	/promociones.html	Ofertas especiales
-Login	/usuario/login.html	Inicio de sesión
-Registro	/usuario/registro.html	Crear cuenta
-Mi cuenta	/usuario/index.html	Perfil del cliente
-Mis pedidos	/usuario/mis-pedidos.html	Historial de pedidos
-Panel Admin	/admin/index.html	Gestión de productos y pedidos
-Estructura del frontend
-static/
-├── index.html              # Página de inicio
-├── styles.css              # Estilos globales
-├── js/
-│   ├── api.js              # Llamadas a la API REST
-│   ├── auth.js             # Autenticación y sesión
-│   ├── navbar.js           # Comportamiento del navbar
-│   ├── carrito.js          # Lógica del carrito
-│   ├── login.js            # Flujo de login
-│   ├── productos.js        # Catálogo y filtros
-│   └── utils.js            # Utilidades compartidas
-├── usuario/                # Páginas del cliente
-├── admin/                  # Panel de administración
-└── utils/
-    ├── navbar/             # Fragmento del navbar
-    └── footer/             # Fragmento del footer
-Despliegue en AWS
-El proyecto está desplegado en una instancia AWS EC2 con Ubuntu.
+---
 
-Stack de producción
-EC2 — Ubuntu Server
-Nginx — Reverse proxy en el puerto 80
-Spring Boot — Corre como servicio systemd en el puerto 8080
-MySQL — Base de datos en Hostinger
-Configuración de Nginx
-server {
-    listen 80;
-    server_name 18.188.12.224;
+## Archivos que NO se suben a GitHub
 
-    location / {
-        proxy_pass http://localhost:8080;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
+| Archivo | Razón |
+|---|---|
+| `application.properties` | Contiene credenciales de BD |
+| `build/` | Archivos compilados generados localmente |
+| `.idea/`, `.vscode/` | Configuración del editor de cada quien |
+| `.DS_Store` | Archivo interno de macOS |
+
+Todos están listados en `.gitignore`.
+
+---
+
+## Estructura del proyecto
+
+- `config/` — Configuración de Spring Security y BCryptPasswordEncoder
+- `controller/` — Endpoints de usuarios, productos, categorías, pedidos y detalles
+- `exceptions/` — Manejo centralizado de errores HTTP y excepciones personalizadas
+- `model/` — Entidades JPA: User, Product, Category, Order, OrderDetail
+- `repository/` — Interfaces de acceso a base de datos
+- `service/` — Lógica de negocio para cada entidad
+
+---
+
+## Diagrama Entidad-Relación
+
+![Diagrama Entidad-Relación ALMIUX](./images/readme/Entidad-Relacion.png)
+
+### Tablas y relaciones
+
+| Tabla | Descripción | Relaciones |
+|---|---|---|
+| `usuarios` | Clientes y administradores | 1:N con `pedidos` |
+| `categorias` | Grupos de productos | 1:N con `productos` |
+| `productos` | Catálogo de productos | N:1 con `categorias` |
+| `pedidos` | Órdenes de compra | N:1 con `usuarios`, 1:N con `detalle_pedido` |
+| `detalle_pedido` | Productos dentro de un pedido | N:1 con `pedidos` y `productos` |
+
+---
+
+## Endpoints de la API
+
+Base URL: `http://localhost:8080/api/v1.0`
+
+### Usuarios `/users`
+
+| Método | Endpoint | Descripción | Status |
+|---|---|---|---|
+| GET | `/users` | Obtener todos los usuarios | 200 |
+| GET | `/users/{id}` | Obtener usuario por ID | 200 / 404 |
+| GET | `/users/email?email=` | Obtener usuario por email | 200 / 404 |
+| POST | `/users` | Crear nuevo usuario | 201 / 409 |
+| PUT | `/users/{id}` | Actualizar usuario | 200 / 404 |
+| DELETE | `/users/{id}` | Eliminar usuario | 204 / 404 |
+
+**Ejemplo — crear usuario:**
+```json
+POST /api/v1.0/users
+{
+  "nombres": "Juan",
+  "apellidos": "Pérez",
+  "email": "juan@email.com",
+  "password": "secreto123",
+  "telefono": "5512345678",
+  "genero": "M",
+  "direccion": "Calle Falsa 123",
+  "rol": "CLIENTE"
 }
-Servicio systemd
-El backend corre como servicio con reinicio automático (Restart=always), configurado en /etc/systemd/system/almiux.service.
+```
 
-Comandos de administración
-# Ver estado del servicio
-sudo systemctl status almiux
+![Ejemplo de endpoint en Postman](./images/readme/Danna-Migajera.png)
 
-# Reiniciar el backend
-sudo systemctl restart almiux
+---
 
-# Recargar Nginx
-sudo service nginx restart
-Actualizar el servidor
-# 1. Construir el nuevo JAR (local)
-./gradlew bootJar
+### Categorías `/category`
 
-# 2. Detener el servicio y borrar el JAR anterior (VM)
-sudo systemctl stop almiux && rm ~/src/almiux.jar
+| Método | Endpoint | Descripción | Status |
+|---|---|---|---|
+| GET | `/category/categories` | Obtener todas las categorías | 200 |
+| GET | `/category/{id}` | Obtener categoría por ID | 200 / 404 |
+| POST | `/category` | Crear nueva categoría | 201 / 409 |
+| PUT | `/category/{id}` | Actualizar categoría | 200 / 404 |
+| DELETE | `/category/{id}` | Eliminar categoría | 204 / 404 |
 
-# 3. Subir el nuevo JAR (local)
-scp -i 404notfound.pem build/libs/*.jar ubuntu@18.188.12.224:~/src/almiux.jar
+**Ejemplo — crear categoría:**
+```json
+POST /api/v1.0/category
+{
+  "nombre": "Electrónica",
+  "slug": "electronica",
+  "icono": "laptop",
+  "descripcion": "Dispositivos electrónicos y gadgets"
+}
+```
 
-# 4. Reiniciar el servicio (VM)
-sudo systemctl start almiux
-Gestión del proyecto
-Tablero Jira
+---
 
-El proyecto se gestionó con metodología Scrum usando Jira para el seguimiento de tareas y sprints.
+### Productos `/products`
 
-Equipo
-404 Team Not Found — Generation México Bootcamp · Cohorte 66
+| Método | Endpoint | Descripción | Status |
+|---|---|---|---|
+| GET | `/products` | Obtener todos los productos | 200 |
+| GET | `/products/{id}` | Obtener producto por ID | 200 / 404 |
+| POST | `/products` | Crear nuevo producto | 201 |
+| PUT | `/products/{id}` | Actualizar producto | 200 / 404 |
+| DELETE | `/products/{id}` | Eliminar producto | 204 / 404 |
 
-Integrante	Rol
-Kaleb Torres	Full Stack Developer · Scrum Master
-Danna Remigio	Frontend Developer
-Arturo Ramírez	Frontend Developer
-Yarilis Hernández	Frontend Developer
-Zared Ortiz	Backend Developer
-Noé Hernández	QA Tester
-Diego Quiñónez	Backend Developer
-<div align="center">
-🛒 Abarrotes Almiux
+**Ejemplo — crear producto:**
+```json
+POST /api/v1.0/products
+{
+  "categoria": { "id": 1 },
+  "nombre": "Laptop Gamer",
+  "descripcion": "Laptop para gaming de alto rendimiento",
+  "icono": "laptop-icon.png",
+  "precio": 25999.99,
+  "enOferta": true,
+  "descuentoPct": 10,
+  "precioFinal": 23399.99,
+  "activo": true
+}
+```
 
-Proyecto académico desarrollado para el Bootcamp de Desarrollo Web Full Stack
-Generation México · Cohorte 66 · 2026
+---
 
-Hecho en México con ❤️
+### Pedidos `/orders`
 
-</div>
+| Método | Endpoint | Descripción | Status |
+|---|---|---|---|
+| GET | `/orders` | Obtener todos los pedidos | 200 |
+| GET | `/orders/{id}` | Obtener pedido por ID | 200 / 404 |
+| POST | `/orders` | Crear nuevo pedido | 201 |
+| PUT | `/orders/{id}` | Actualizar pedido | 200 / 404 |
+| DELETE | `/orders/{id}` | Eliminar pedido | 204 / 404 |
+
+**Valores válidos para `estatus`:** `PENDIENTE` · `EN_PROCESO` · `ENVIADO` · `ENTREGADO` · `CANCELADO`
+
+**Ejemplo — crear pedido:**
+```json
+POST /api/v1.0/orders
+{
+  "user": { "id": 1 },
+  "estatus": "PENDIENTE",
+  "total": 23399.99,
+  "direccionEntrega": "Calle Falsa 123",
+  "telefonoContacto": "5512345678",
+  "notas": "Dejar en recepción",
+  "fechaPedido": "2026-06-08T10:00:00"
+}
+```
+
+---
+
+### Detalles de Pedido
+
+| Método | Endpoint | Descripción | Status |
+|---|---|---|---|
+| GET | `/orders/{idPedido}/detalles` | Obtener detalles de un pedido | 200 |
+| GET | `/detalles/{id}` | Obtener detalle por ID | 200 / 404 |
+| POST | `/orders/{idPedido}/detalles` | Agregar detalle a un pedido | 201 |
+| PUT | `/detalles/{id}` | Actualizar detalle | 200 / 404 |
+| DELETE | `/detalles/{id}` | Eliminar detalle | 204 / 404 |
+
+**Ejemplo — agregar detalle:**
+```json
+POST /api/v1.0/orders/1/detalles
+{
+  "order": { "idPedido": 1 },
+  "product": { "id": 3 },
+  "cantidad": 2,
+  "precioUnitario": 23399.99,
+  "subtotal": 46799.98
+}
+```
+
+---
+
+## Manejo de errores
+
+Todos los errores devuelven respuestas JSON con el código HTTP correspondiente.
+
+| Código | Cuándo ocurre |
+|---|---|
+| `400 Bad Request` | El body no pasa las validaciones (`@NotBlank`, `@Email`, etc.) |
+| `404 Not Found` | El recurso solicitado no existe |
+| `409 Conflict` | Se intenta crear un recurso con un dato único ya registrado |
+
+**Ejemplo de error 400:**
+```json
+{
+  "nombre": "El nombre del producto es obligatorio",
+  "email": "Formato de email inválido"
+}
+```
+
+**Ejemplo de error 404:**
+Producto no encontrado con id: 99
+
+---
+
+## Roles de usuario
+
+| Rol | Descripción |
+|---|---|
+| `CLIENTE` | Usuario regular que realiza compras |
+| `ADMIN` | Administrador con acceso total al sistema |
+
+---
+
+## Notas de desarrollo
+
+- **Contraseñas:** Se almacenan encriptadas con BCrypt. Nunca se devuelven en las respuestas (anotadas con `@JsonIgnore`).
+- **CORS:** Actualmente configurado para aceptar cualquier origen (`*`). Restringir antes de pasar a producción.
+- **`ddl-auto=update`:** Hibernate actualiza el esquema automáticamente. Cambiar a `validate` o `none` en producción.
+- **Seguridad HTTP:** Actualmente todos los endpoints son públicos. Configurar autenticación JWT antes de producción.
+
+---
+
+## Equipo
+
+**404 Team Not Found** · Generation México Bootcamp
+
+| Integrante | Rol |
+|---|---|
+| **Kaleb Torres** | Developer · Scrum Master |
+| **Danna Remigio** | Frontend Developer |
+| **Arturo Ramírez** | Frontend Developer |
+| **Yarilis Hernández** | Frontend Developer |
+| **Zared Ortiz** | Backend Developer |
+| **Noé Hernández** | QA Tester |
+| **Diego Quiñónez** | Backend Developer |
+
+---
+
+*© 2026 · Abarrotes Almiux · Hecho en México con ❤️*  
+*Proyecto académico — Generation México Bootcamp*
