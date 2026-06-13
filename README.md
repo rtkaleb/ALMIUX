@@ -1,10 +1,94 @@
-# ALMIUX Backend
+# 🏪 ALMIUX — Sistema de Gestión para Tienda de Abarrotes
 
-API REST desarrollada con **Spring Boot 3** para la plataforma ALMIUX. Gestiona usuarios, productos, categorías, pedidos y sus detalles.
+![Página Principal](./images/readme/AlmiuxInicio.png)
+
+> Proyecto desarrollado por el equipo **404 Team Not Found** como parte del Bootcamp Full Stack Java de Generation México.
 
 ---
 
-## Tecnologías
+# 📖 Descripción
+
+ALMIUX es una plataforma web desarrollada para la administración y gestión de una tienda de abarrotes.
+
+El proyecto integra un frontend responsivo para la interacción de los usuarios y un backend desarrollado con Spring Boot que expone una API REST para la gestión de información.
+
+La plataforma permite administrar productos, usuarios y operaciones relacionadas con el negocio mediante una arquitectura cliente-servidor, facilitando la organización del inventario y mejorando la experiencia de los clientes.
+
+---
+
+# 🚀 Características Principales
+
+## Frontend
+
+* Diseño responsivo para dispositivos móviles, tablets y escritorio.
+* Catálogo de productos organizado por categorías.
+* Búsqueda y filtrado dinámico de productos.
+* Registro de usuarios.
+* Inicio de sesión.
+* Página institucional con información del negocio.
+* Panel administrativo para gestión de productos.
+* Carrito de compras.
+* Navegación intuitiva y amigable.
+
+## Backend
+
+* API REST desarrollada con Spring Boot.
+* Arquitectura basada en capas (Controller → Service → Repository).
+* Persistencia de datos mediante JPA/Hibernate con MySQL.
+* Gestión de usuarios, productos, categorías, pedidos y detalles de pedido.
+* Validación de datos con Spring Validation.
+* Encriptación de contraseñas con BCrypt.
+* Manejo centralizado de excepciones HTTP.
+* Endpoints REST completos para operaciones CRUD.
+
+![Backend corriendo en IntelliJ](./images/readme/Spring.png)
+
+---
+
+# 🖼️ Capturas del Proyecto
+
+## Página Principal
+
+![Página Principal](./images/readme/AlmiuxInicio.png)
+
+---
+
+# 📋 Gestión del Proyecto
+
+Durante el desarrollo se aplicaron metodologías ágiles para la organización, seguimiento y control de actividades.
+
+## Tablero Jira
+
+![Tablero Jira](./images/readme/JiraAlmiux.png)
+
+El equipo gestionó historias de usuario, backlog, tareas técnicas y seguimiento de sprints utilizando Jira como herramienta principal de trabajo.
+
+---
+
+# 🏗️ Arquitectura General
+
+```text
+Frontend (HTML, CSS, JavaScript)
+            │
+            ▼
+     API REST Spring Boot
+            │
+            ▼
+          MySQL
+```
+
+---
+
+# 🛠️ Tecnologías Utilizadas
+
+## Frontend
+
+* HTML5
+* CSS3
+* JavaScript (ES6+)
+* Bootstrap
+
+## Backend
 
 | Tecnología | Versión | Uso |
 |---|---|---|
@@ -17,30 +101,81 @@ API REST desarrollada con **Spring Boot 3** para la plataforma ALMIUX. Gestiona 
 | Hibernate | — | ORM (mapeado entidad ↔ tabla) |
 | Gradle | 8+ | Gestión de dependencias y build |
 
+## Herramientas
+
+* Git · GitHub
+* Jira
+* Postman
+* MySQL Workbench
+* VS Code · IntelliJ IDEA
+
 ---
+
+# 📂 Estructura del Proyecto
+
+```text
+ALMIUX/
+│
+├── frontend/                          ← Archivos estáticos servidos por Spring Boot
+│   ├── index.html
+│   ├── productos.html
+│   ├── nosotros.html
+│   ├── login.html
+│   ├── registro.html
+│   ├── admin.html
+│   ├── css/
+│   ├── js/
+│   └── images/
+│
+├── backend/  (src/main/java/...)
+│   ├── config/        ← Spring Security y BCryptPasswordEncoder
+│   ├── controller/    ← Endpoints de usuarios, productos, categorías, pedidos y detalles
+│   ├── exceptions/    ← Manejo centralizado de errores HTTP
+│   ├── model/         ← Entidades JPA: User, Product, Category, Order, OrderDetail
+│   ├── repository/    ← Interfaces de acceso a base de datos
+│   └── service/       ← Lógica de negocio para cada entidad
+│
+├── src/main/resources/
+│   ├── application.properties.example
+│   └── static/        ← Frontend servido como recursos estáticos
+│
+├── build.gradle
+└── README.md
+```
+
+---
+
+# ⚙️ Instalación y Configuración
 
 ## Requisitos previos
 
-- Java 17 o superior
-- MySQL 8 corriendo localmente
-- Gradle (o usar el wrapper incluido `./gradlew`)
+* Java 17 o superior
+* MySQL 8 corriendo localmente
+* Gradle (o usar el wrapper incluido `./gradlew`)
 
 ---
 
-## Configuración (para cada integrante del equipo)
+## 1. Clonar el repositorio
 
-> `application.properties` está en `.gitignore` y **no se sube a GitHub** porque contiene contraseñas.
-> Cada integrante debe crearlo localmente siguiendo estos pasos.
+```bash
+git clone https://github.com/Equipo-2-CH66/ALMIUX.git
+cd ALMIUX
+```
 
-### 1. Crear la base de datos en MySQL
+---
+
+## 2. Crear la base de datos en MySQL
 
 ```sql
 CREATE DATABASE almiux_db;
 ```
 
-### 2. Crear tu archivo de configuración local
+---
 
-Copia la plantilla incluida en el repositorio y renómbrala:
+## 3. Crear el archivo de configuración local
+
+> `application.properties` está en `.gitignore` y **no se sube a GitHub** porque contiene contraseñas.
+> Cada integrante debe crearlo localmente siguiendo estos pasos.
 
 ```bash
 # Mac / Linux
@@ -50,31 +185,39 @@ cp src/main/resources/application.properties.example src/main/resources/applicat
 copy src\main\resources\application.properties.example src\main\resources\application.properties
 ```
 
-### 3. Editar con tus credenciales
-
-Abre `src/main/resources/application.properties` y cambia estos dos valores:
+Abre el archivo y edita tus credenciales:
 
 ```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/almiux_db
 spring.datasource.username=TU_USUARIO_MYSQL
 spring.datasource.password=TU_CONTRASEÑA_MYSQL
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
 ```
 
-> Si tu MySQL local no tiene contraseña (instalación por defecto), deja `password=` en blanco.
+> Si tu MySQL local no tiene contraseña, deja `password=` en blanco.
 
-### 4. Levantar el servidor
+---
+
+## 4. Ejecutar el Backend
 
 ```bash
 ./gradlew bootRun
 ```
 
-El servidor inicia en `http://localhost:8080`.  
+La API estará disponible en `http://localhost:8080`.  
 Las tablas se crean automáticamente gracias a `spring.jpa.hibernate.ddl-auto=update`.
-
-![Backend corriendo en IntelliJ](./images/readme/Spring.png)
 
 ---
 
-## Archivos que NO se suben a GitHub
+## 5. Ejecutar el Frontend
+
+Abrir directamente `index.html` o utilizar la extensión **Live Server** de VS Code.
+
+---
+
+# 📁 Archivos que NO se suben a GitHub
 
 | Archivo | Razón |
 |---|---|
@@ -87,22 +230,9 @@ Todos están listados en `.gitignore`.
 
 ---
 
-## Estructura del proyecto
-
-- `config/` — Configuración de Spring Security y BCryptPasswordEncoder
-- `controller/` — Endpoints de usuarios, productos, categorías, pedidos y detalles
-- `exceptions/` — Manejo centralizado de errores HTTP y excepciones personalizadas
-- `model/` — Entidades JPA: User, Product, Category, Order, OrderDetail
-- `repository/` — Interfaces de acceso a base de datos
-- `service/` — Lógica de negocio para cada entidad
-
----
-
-## Diagrama Entidad-Relación
+# 🗄️ Base de Datos — Diagrama Entidad-Relación
 
 ![Diagrama Entidad-Relación ALMIUX](./images/readme/Entidad-Relacion.png)
-
-### Tablas y relaciones
 
 | Tabla | Descripción | Relaciones |
 |---|---|---|
@@ -114,11 +244,11 @@ Todos están listados en `.gitignore`.
 
 ---
 
-## Endpoints de la API
+# 🔌 API REST
 
 Base URL: `http://localhost:8080/api/v1.0`
 
-### Usuarios `/users`
+## Usuarios `/users`
 
 | Método | Endpoint | Descripción | Status |
 |---|---|---|---|
@@ -148,7 +278,7 @@ POST /api/v1.0/users
 
 ---
 
-### Categorías `/category`
+## Categorías `/category`
 
 | Método | Endpoint | Descripción | Status |
 |---|---|---|---|
@@ -171,7 +301,7 @@ POST /api/v1.0/category
 
 ---
 
-### Productos `/products`
+## Productos `/products`
 
 | Método | Endpoint | Descripción | Status |
 |---|---|---|---|
@@ -199,7 +329,7 @@ POST /api/v1.0/products
 
 ---
 
-### Pedidos `/orders`
+## Pedidos `/orders`
 
 | Método | Endpoint | Descripción | Status |
 |---|---|---|---|
@@ -227,7 +357,7 @@ POST /api/v1.0/orders
 
 ---
 
-### Detalles de Pedido
+## Detalles de Pedido
 
 | Método | Endpoint | Descripción | Status |
 |---|---|---|---|
@@ -251,7 +381,7 @@ POST /api/v1.0/orders/1/detalles
 
 ---
 
-## Manejo de errores
+# ⚠️ Manejo de Errores
 
 Todos los errores devuelven respuestas JSON con el código HTTP correspondiente.
 
@@ -269,12 +399,9 @@ Todos los errores devuelven respuestas JSON con el código HTTP correspondiente.
 }
 ```
 
-**Ejemplo de error 404:**
-Producto no encontrado con id: 99
-
 ---
 
-## Roles de usuario
+# 🔐 Roles de Usuario
 
 | Rol | Descripción |
 |---|---|
@@ -283,18 +410,45 @@ Producto no encontrado con id: 99
 
 ---
 
-## Notas de desarrollo
+# 📋 Funcionalidades
 
-- **Contraseñas:** Se almacenan encriptadas con BCrypt. Nunca se devuelven en las respuestas (anotadas con `@JsonIgnore`).
-- **CORS:** Actualmente configurado para aceptar cualquier origen (`*`). Restringir antes de pasar a producción.
-- **`ddl-auto=update`:** Hibernate actualiza el esquema automáticamente. Cambiar a `validate` o `none` en producción.
-- **Seguridad HTTP:** Actualmente todos los endpoints son públicos. Configurar autenticación JWT antes de producción.
+## Gestión de Usuarios
+
+* Registro de usuarios.
+* Consulta de usuarios.
+* Actualización de información.
+* Eliminación de registros.
+* Validación de datos.
+
+## Gestión de Productos
+
+* Alta de productos.
+* Consulta de productos.
+* Actualización de productos.
+* Eliminación de productos.
+* Clasificación por categorías.
+
+## Experiencia de Usuario
+
+* Diseño responsivo.
+* Navegación intuitiva.
+* Formularios validados.
+* Interfaz amigable.
 
 ---
 
-## Equipo
+# 📝 Notas de Desarrollo
 
-**404 Team Not Found** · Generation México Bootcamp
+* **Contraseñas:** Se almacenan encriptadas con BCrypt. Nunca se devuelven en las respuestas (anotadas con `@JsonIgnore`).
+* **CORS:** Actualmente configurado para aceptar cualquier origen (`*`). Restringir antes de pasar a producción.
+* **`ddl-auto=update`:** Hibernate actualiza el esquema automáticamente. Cambiar a `validate` o `none` en producción.
+* **Seguridad HTTP:** Actualmente todos los endpoints son públicos. Configurar autenticación JWT antes de producción.
+
+---
+
+# 👥 Equipo de Desarrollo
+
+## 404 Team Not Found
 
 | Integrante | Rol |
 |---|---|
@@ -308,5 +462,26 @@ Producto no encontrado con id: 99
 
 ---
 
+# 🎓 Proyecto Académico
+
+Proyecto desarrollado como parte del Bootcamp Full Stack Java de Generation México.
+
+Durante el desarrollo se aplicaron conocimientos de:
+
+* Desarrollo Frontend
+* Desarrollo Backend
+* APIs REST
+* Bases de Datos Relacionales
+* Metodologías Ágiles
+* Control de Versiones con Git
+
+---
+
+# 📄 Licencia
+
+Proyecto desarrollado con fines académicos y educativos.
+
+---
+
 *© 2026 · Abarrotes Almiux · Hecho en México con ❤️*  
-*Proyecto académico — Generation México Bootcamp*
+*Proyecto académico — Generation México Bootcamp · 404 Team Not Found*
