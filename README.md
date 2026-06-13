@@ -460,6 +460,8 @@ Todos los errores devuelven respuestas JSON con el código HTTP correspondiente.
 | **Noé Hernández** | QA Tester |
 | **Diego Quiñónez** | Backend Developer |
 
+![Miembros del equipo](./images/readme/Desarrolladores.png)
+
 ---
 
 # 🎓 Proyecto Académico
