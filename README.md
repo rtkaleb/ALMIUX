@@ -1,6 +1,6 @@
 # 🏪 ALMIUX — Sistema de Gestión para Tienda de Abarrotes
 
-![Página Principal](./images/readme/AlmiuxInicio.png)
+![Página Principal](./images/readme/Almiux_Logo_Sin_Fondo.png)
 
 > Proyecto desarrollado por el equipo **404 Team Not Found** como parte del Bootcamp Full Stack Java de Generation México.
 
